@@ -1,0 +1,29 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "b6e8757dd22c4fcaefdfe7058807dc14"
+name = "social-share-app"
+handle = "social-share-app-5"
+application_url = "https://slovak-vacancies-browsers-there.trycloudflare.com"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "quickstart-18f4d64b.myshopify.com"
+include_config_on_deploy = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = ""
+
+[auth]
+redirect_urls = [
+  "https://slovak-vacancies-browsers-there.trycloudflare.com/auth/callback",
+  "https://slovak-vacancies-browsers-there.trycloudflare.com/auth/shopify/callback",
+  "https://slovak-vacancies-browsers-there.trycloudflare.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2024-04"
+
+[pos]
+embedded = false
