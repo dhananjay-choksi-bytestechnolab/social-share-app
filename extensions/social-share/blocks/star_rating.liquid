@@ -1,0 +1,134 @@
+{% schema %}
+{
+  "name": "Social Share",
+  "target": "section",
+  "settings": [
+    { "type": "product", "id": "product", "label": "product", "autofill": true },
+    { "type": "color", "id": "colour", "label": "Star Colour", "default": "#ff0000" }
+  ]
+}
+{% endschema %}
+
+<h1>Social Share</h1>
+<button onclick="share('facebook', '{{ product.url | prepend: shop.url }}', '{{ product.title | escape }}')">Facebook</button>
+<button onclick="share('twitter', '{{ product.url | prepend: shop.url }}', '{{ product.title | escape }}')">Twitter</button>
+<button onclick="share('linkedin', '{{ product.url | prepend: shop.url }}', '{{ product.title | escape }}')">LinkedIn</button>
+<button onclick="share('whatsapp', '{{ product.url | prepend: shop.url }}', '{{ product.title | escape }}')">WhatsApp</button>
+<button onclick="share('mail', '{{ product.url | prepend: shop.url }}', '{{ product.title | escape }}')">Mail</button>
+<button onclick="share('reddit', '{{ product.url | prepend: shop.url }}', '{{ product.title | escape }}')">Reddit</button>
+<button onclick="share('pinterest', '{{ product.url | prepend: shop.url }}', '{{ product.title | escape }}')">Pinterest</button>
+<button onclick="share('tumblr', '{{ product.url | prepend: shop.url }}', '{{ product.title | escape }}')">Tumblr</button>
+<button onclick="share('vk', '{{ product.url | prepend: shop.url }}', '{{ product.title | escape }}')">VK</button>
+<button onclick="share('telegram', '{{ product.url | prepend: shop.url }}', '{{ product.title | escape }}')">Telegram</button>
+<button onclick="downloadImage('{{ product.featured_image | prepend: 'https:' }}')">Share on Instagram</button>
+
+{% comment %} {{product | json}} {% endcomment %}
+
+<script>
+
+  {% comment %} var productUrl = "{{ product.url | prepend: shop.url }}";
+  var productTitle = "{{ product.title | escape }}"; {% endcomment %}
+
+function share(platform, url, productTitle) {
+  var pageUrl = encodeURIComponent(url);
+  var pageTitle = encodeURIComponent(productTitle);
+
+  console.log("pageUrl : ", pageUrl);
+  console.log("pageTitle : ", pageTitle);
+  var shareUrl = '';
+
+  switch (platform) {
+    case 'facebook':
+      shareUrl = "https://www.facebook.com/sharer.php?u=" + pageUrl;
+      break;
+    case 'twitter':
+      shareUrl = "https://twitter.com/intent/tweet?url=" + pageUrl + "&text=" + pageTitle;
+      break;
+    case 'linkedin':
+      shareUrl = "https://www.linkedin.com/shareArticle?mini=true&url=" + pageUrl;
+      break;
+    case 'whatsapp':
+      shareUrl = "https://api.whatsapp.com/send?text=" + pageTitle + "%20" + pageUrl;
+      break;
+    case 'mail':
+      shareUrl = "mailto:?subject=" + pageTitle + "&body=Read%20the%20article%20" + pageTitle + "%20on%20" + pageUrl;
+      break;
+    case 'reddit':
+      shareUrl = "https://www.reddit.com/submit?url=" + pageUrl + "&title=" + pageTitle;
+      break;
+    case 'pinterest':
+      shareUrl = "https://pinterest.com/pin/create/button/?url=" + pageUrl + "&description=" + pageTitle;
+      break;
+    case 'tumblr':
+      shareUrl = "https://www.tumblr.com/share/link?url=" + pageUrl + "&name=" + pageTitle;
+      break;
+    case 'vk':
+      shareUrl = "https://vk.com/share.php?url=" + pageUrl + "&title=" + pageTitle;
+      break;
+    case 'telegram':
+      shareUrl = "https://telegram.me/share/url?url=" + pageUrl + "&text=" + pageTitle;
+      break;
+    default:
+      alert('Unsupported platform: ' + platform);
+      return;
+  }
+
+  socialWindow(shareUrl, 570, 450);
+}
+
+function socialWindow(url, width, height) {
+  var left = (screen.width - width) / 2;
+  var top = (screen.height - height) / 2;
+  var params = "menubar=no,toolbar=no,status=no,width=" + width + ",height=" + height + ",top=" + top + ",left=" + left;
+  window.open(url, "", params);
+}
+
+function downloadImage(imageUrl) {
+  var a = document.createElement('a');
+  a.href = imageUrl;
+  a.download = 'product-image.jpg';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  alert('Image downloaded! Now you can share it on Instagram.');
+}
+
+const BASE_URL = "https://steve-serves-senators-shorter.trycloudflare.com/app/frontend-action";
+const SHOPIFY_SHOP = window.Shopify.shop;
+
+async function getAppData() {
+  let postData = {
+    action: 'get_settings',
+    shop: SHOPIFY_SHOP
+  };
+
+  try {
+    fetch(BASE_URL, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(postData),
+    })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error(`Network response was not ok: ${response.statusText}`);
+          }
+          return response.json();
+      })
+      .then(data => {
+          console.log("data : ", data);  
+      })
+      .catch(error => {
+          console.error('Error saving form data:', error);
+      });
+
+
+  } catch (error) {
+    console.log("error : ", error);
+  }
+}
+
+getAppData();
+
+</script>
